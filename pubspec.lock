@@ -73,6 +73,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.3"
+  dart_multiaddr:
+    dependency: "direct main"
+    description:
+      name: dart_multiaddr
+      sha256: b85d480924d324958cc9078ae3925d94b2662ec0e4420aa764aec7b15554caef
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.0"
   file:
     dependency: transitive
     description:
