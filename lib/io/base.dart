@@ -10,13 +10,23 @@ abstract class Writer {
   void write();
 }
 
-abstract class ReadCloser extends Reader implements Closer {}
+abstract class ReadCloser {
+  ReadCloser({required this.reader, required this.closer});
+  Reader reader;
+  Closer closer;
+}
 
 abstract class WriteCloser extends Writer implements Closer {}
 
 abstract class ReadWriter extends Reader implements Writer {}
 
-abstract class ReadWriteCloser extends ReadWriter implements Closer {}
+abstract class ReadWriteCloser {
+  ReadWriteCloser(
+      {required this.reader, required this.writer, required this.closer});
+  Reader reader;
+  Writer writer;
+  Closer closer;
+}
 
 abstract class MsgWriter {
   void writeMsg(String msg);
