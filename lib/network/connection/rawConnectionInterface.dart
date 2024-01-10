@@ -1,7 +1,8 @@
 import 'dart:ffi';
 import 'package:dart_multihash/dart_multihash.dart';
-
+import 'dart:typed_data';
 import 'package:dart_multiaddr/dart_multiaddr.dart';
+import 'package:dartlibptp/io/base.dart';
 import 'package:dartlibptp/io/base.dart';
 
 enum ConnectionStatus { open, closing, closed }
@@ -12,17 +13,14 @@ enum WriteStatus { ready, writing, done, closing, closed }
 
 enum Direction { inbound, outbound }
 
-enum PeerIdType { RSAPeerId, Ed25519PeerId, Secp256k1PeerId }
+enum PeerIdType { RSA, Ed25519, Secp256k1 }
 
-class IRawConnection extends ReadWriteCloser {
+class rawConnectionInterface {
+  Reader reader;
+  Writer writer;
   bool isInitiator;
-
-  IRawConnection(
-      {required this.isInitiator,
-      required reader,
-      required writer,
-      required closer})
-      : super(reader: reader, writer: writer, closer: closer);
+  rawConnectionInterface(
+      {required this.reader, required this.writer, required this.isInitiator});
 }
 
 class ConnectionTimeline {
@@ -37,7 +35,7 @@ class ConnectionTimeline {
 class Connection {
   String id; //should this be uuid???
   Multiaddr remoteAddr;
-  PeerId remotePeer;
+  //PeerId remotePeer;
   List<String> tags;
   List<Stream> streams;
   Direction direction;
@@ -50,7 +48,7 @@ class Connection {
   Connection(
       {required this.id,
       required this.remoteAddr,
-      required this.remotePeer,
+      //  required this.remotePeer,
       this.tags = const [],
       this.streams = const [],
       required this.direction,
@@ -95,12 +93,11 @@ class BasePeerID {
 }
 
 class RSAPeerId extends BasePeerID {
-  List<Uint8>? publicKey;
+  List multiHash;
+  List<Uint8>? privateKey;
+  final PeerIdType type = PeerIdType.RSA;
 
-  RSAPeerId(
-      {required type,
-      required multiHash,
-      required this.publicKey,
-      required privateKey})
-      : super(type: type, multiHash: multiHash, privateKey: privateKey);
+  RSAPeerId({required this.multiHash, this.privateKey})
+      : super(
+            type: PeerIdType.RSA, multiHash: multiHash, privateKey: privateKey);
 }
